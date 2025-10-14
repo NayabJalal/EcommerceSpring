@@ -7,10 +7,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
-import static sun.awt.image.MultiResolutionCachedImage.map;
 
 @Component
 public class FakeStoreCategoryGateway implements ICategoryGateway {

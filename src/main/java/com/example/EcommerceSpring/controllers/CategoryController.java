@@ -1,11 +1,13 @@
 package com.example.EcommerceSpring.controllers;
 
 //import org.springframework.stereotype.Component;
+import com.example.EcommerceSpring.dto.CategoryDTO;
 import com.example.EcommerceSpring.services.FakestoreCategoryService;
 import com.example.EcommerceSpring.services.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 //@Component// automatically registered as a bean in component scan
@@ -47,7 +49,7 @@ public class CategoryController {
 
 
     @GetMapping
-    public List<String> getAllCategories(){
+    public List<CategoryDTO> getAllCategories() throws IOException {
         return this.categoryService.getCategoriesService();
     }
 
