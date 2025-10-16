@@ -13,3 +13,4 @@ public class FakeStoreProductResponse {
     private String category;
     private String image;
 }
+

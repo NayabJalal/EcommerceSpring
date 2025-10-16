@@ -1,6 +1,7 @@
 package com.example.EcommerceSpring.configuration;
 
 import com.example.EcommerceSpring.Gateway.api.FakeStoreCategoryApi;
+import com.example.EcommerceSpring.Gateway.api.FakeStoreProductApi;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +24,10 @@ public class RetrofitConfig {
     @Bean// refer this method where we are going to create the object of this particular class...to do this we need a retrofit instance
     public FakeStoreCategoryApi fakeStoreCategoryApi(Retrofit retrofit){// this method is now responsible for providing an object of fakeStoreCategoryApi
         return retrofit.create(FakeStoreCategoryApi.class);// this gives a responsibilities of creating an object of retrofit instance(above)
+    }
+    @Bean
+    public FakeStoreProductApi fakeStoreProductApi(Retrofit retrofit){
+        return retrofit.create(FakeStoreProductApi.class);
     }
     @Bean
     public OkHttpClient okHttpClient() {
