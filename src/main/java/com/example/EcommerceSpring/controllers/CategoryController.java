@@ -5,6 +5,7 @@ import com.example.EcommerceSpring.dto.CategoryDTO;
 import com.example.EcommerceSpring.services.FakestoreCategoryService;
 import com.example.EcommerceSpring.services.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -49,8 +50,9 @@ public class CategoryController {
 
 
     @GetMapping
-    public List<CategoryDTO> getAllCategories() throws IOException {
-        return this.categoryService.getCategoriesService();
+    public ResponseEntity<List<CategoryDTO>> getAllCategories() throws IOException {
+         List<CategoryDTO> result = this.categoryService.getCategoriesService();
+         return ResponseEntity.ok(result);
     }
 
     // new CategoryController FakestoreCategoryService();
