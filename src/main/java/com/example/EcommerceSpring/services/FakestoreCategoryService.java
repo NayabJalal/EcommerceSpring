@@ -11,7 +11,6 @@ import java.util.List;
 @Service // @Service is a specialized form of @Component, used to mark classes that contain business logic or service layer code.
 public class FakestoreCategoryService implements ICategoryService{
 
-
     //Loose Coupling
     private final ICategoryGateway categoryGateway;
     // Spring injects FakeStoreCategoryGateway here

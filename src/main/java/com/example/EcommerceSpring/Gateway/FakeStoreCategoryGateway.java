@@ -2,7 +2,7 @@ package com.example.EcommerceSpring.Gateway;
 
 import com.example.EcommerceSpring.Gateway.api.FakeStoreCategoryApi;
 import com.example.EcommerceSpring.dto.CategoryDTO;
-import com.example.EcommerceSpring.dto.FakeStoreCategoryRersponseDTO;
+import com.example.EcommerceSpring.dto.FakeStoreCategoryResponseDTO;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -19,14 +19,17 @@ public class FakeStoreCategoryGateway implements ICategoryGateway {
 
     @Override
     public List<CategoryDTO> getAllCategories() throws IOException {
-        FakeStoreCategoryRersponseDTO response = (FakeStoreCategoryRersponseDTO) this.fakeStoreCategoryApi.getallfakeStoreCategories().execute().body();
-        if(response == null){
+        List<String> response =  this.fakeStoreCategoryApi
+                .getAllFakeStoreCategories()
+                .execute()
+                .body();
+        if(response == null || response.isEmpty()){
             throw new IOException("Failed to fetch Categories from FakeStore Api");
         }
-        // Transform external API response to internal DTO
-        return response.getCategories().stream()
-                 .map(category -> CategoryDTO.builder()
-                            .name(category)
+        // Transform external API response to internal DTO(List<String> to CategoryDTO)
+        return response.stream()
+                 .map(categoryName -> CategoryDTO.builder()
+                            .name(categoryName)
                             .build())
         .toList();
     }

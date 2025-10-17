@@ -8,9 +8,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FakeStoreCategoryRersponseDTO {
-    private String status;
-    private String message;
+public class FakeStoreCategoryResponseDTO {
     private List<String> categories;
 }
 

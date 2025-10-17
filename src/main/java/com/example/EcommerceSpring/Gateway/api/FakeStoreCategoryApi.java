@@ -4,13 +4,13 @@ import org.springframework.stereotype.Component;
 import retrofit2.Call;
 import retrofit2.http.GET;
 
-import java.io.IOException;
 import java.util.List;
 
 @Component
 public interface FakeStoreCategoryApi {
 
-    @GET("products/category")
-    Call <List<String>> getallfakeStoreCategories();
-
+    @GET("products/categories")
+    Call <List<String>> getAllFakeStoreCategories();
+    //Call is a class from the Retrofit library (package: retrofit2.Call).
+    //It represents an HTTP request that can be executed either synchronously or asynchronously.
 }
