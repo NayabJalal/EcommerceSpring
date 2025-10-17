@@ -33,11 +33,12 @@ public class CategoryController {
 
     //@Autowired --> It instructs the Spring container to automatically resolve and inject collaborating beans into your objects....not recommended because of final keyword
     private final ICategoryService categoryService;
+    //means once you assign a value to categoryService,
+    //you can’t change it later in the program
 
     public CategoryController(ICategoryService _categoryService) {
-        this.categoryService = _categoryService;
+        this.categoryService = _categoryService; // Spring injects FakeStoreCategoryService here
     }
-
     //Spring will create an object of FakestoreCate..... as it marked as a @service, we just have to inject in using--->Constructor based injector or @autowired annotation
 
 //    CategoryController (ICategoryService _categoryService){// triggered when the constructor of the category is called
@@ -51,9 +52,8 @@ public class CategoryController {
 
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> getAllCategories() throws IOException {
+        // ↓ CALLS: ICategoryService.getCategoriesService()
          List<CategoryDTO> result = this.categoryService.getCategoriesService();
          return ResponseEntity.ok(result);
     }
-
-    // new CategoryController FakestoreCategoryService();
 }

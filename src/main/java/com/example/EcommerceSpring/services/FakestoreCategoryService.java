@@ -11,14 +11,16 @@ import java.util.List;
 public class FakestoreCategoryService implements ICategoryService{
 
 
+    //Loose Coupling
     private final ICategoryGateway categoryGateway;
-
+    // Spring injects FakeStoreCategoryGateway here
     public FakestoreCategoryService(ICategoryGateway categoryGateway) {
         this.categoryGateway = categoryGateway;
     }
 
     @Override
     public List<CategoryDTO> getCategoriesService() throws IOException {
+        // ↓ CALLS: ICategoryGateway.getAllCategories()
         return this.categoryGateway.getAllCategories();
     }
 

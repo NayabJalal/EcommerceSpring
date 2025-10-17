@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
-public class FakeStoreCartGateway {
+public class FakeStoreCartGateway implements ICartGateway {
 
     private final FakeStoreCartApi cartApi;
 
@@ -24,6 +24,11 @@ public class FakeStoreCartGateway {
 
     public FakeStoreCartResponse getCartById(Long id) throws IOException {
         return cartApi.getCartById(id).execute().body();
+    }
+
+    @Override
+    public List<FakeStoreCartResponse> fetchAllCarts() throws IOException {
+        return List.of();
     }
 }
 

@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
-public class FakeStoreProductGateway {
+public class FakeStoreProductGateway implements IProductGateway{
     private final FakeStoreProductApi productApi;
 
     @Autowired
@@ -24,6 +24,11 @@ public class FakeStoreProductGateway {
 
     public FakeStoreProductResponse getProductById(Long id) throws IOException {
         return productApi.getProductById(id).execute().body();
+    }
+
+    @Override
+    public List<FakeStoreProductResponse> fetchAllProducts() throws IOException {
+        return List.of();
     }
 }
 

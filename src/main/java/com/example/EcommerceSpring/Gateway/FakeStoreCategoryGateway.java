@@ -23,6 +23,7 @@ public class FakeStoreCategoryGateway implements ICategoryGateway {
         if(response == null){
             throw new IOException("Failed to fetch Categories from FakeStore Api");
         }
+        // Transform external API response to internal DTO
         return response.getCategories().stream()
                  .map(category -> CategoryDTO.builder()
                             .name(category)

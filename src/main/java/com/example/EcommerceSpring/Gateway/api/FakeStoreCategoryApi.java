@@ -5,10 +5,12 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 
 import java.io.IOException;
+import java.util.List;
+
 @Component
 public interface FakeStoreCategoryApi {
 
     @GET("products/category")
-    Call <FakeStoreCategoryApi> getallfakeStoreCategories() throws IOException;
+    Call <List<String>> getallfakeStoreCategories();
 
 }
