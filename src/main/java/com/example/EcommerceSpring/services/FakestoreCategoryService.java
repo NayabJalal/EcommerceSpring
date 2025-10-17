@@ -2,6 +2,7 @@ package com.example.EcommerceSpring.services;
 
 import com.example.EcommerceSpring.Gateway.ICategoryGateway;
 import com.example.EcommerceSpring.dto.CategoryDTO;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -14,7 +15,8 @@ public class FakestoreCategoryService implements ICategoryService{
     //Loose Coupling
     private final ICategoryGateway categoryGateway;
     // Spring injects FakeStoreCategoryGateway here
-    public FakestoreCategoryService(ICategoryGateway categoryGateway) {
+    public FakestoreCategoryService(
+            @Qualifier("Nayab") ICategoryGateway categoryGateway) {
         this.categoryGateway = categoryGateway;
     }
 
