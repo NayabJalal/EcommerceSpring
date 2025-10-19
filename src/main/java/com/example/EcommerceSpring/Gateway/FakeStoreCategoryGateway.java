@@ -2,7 +2,7 @@ package com.example.EcommerceSpring.Gateway;
 
 import com.example.EcommerceSpring.Gateway.api.FakeStoreCategoryApi;
 import com.example.EcommerceSpring.dto.CategoryDTO;
-import com.example.EcommerceSpring.dto.FakeStoreCategoryResponseDTO;
+import com.example.EcommerceSpring.mappers.CategoryMapper;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -12,25 +12,27 @@ import java.util.List;
 public class FakeStoreCategoryGateway implements ICategoryGateway {
 
     private final FakeStoreCategoryApi fakeStoreCategoryApi;
+    private final CategoryMapper categoryMapper; // ← Inject mapper
 
-    public FakeStoreCategoryGateway(FakeStoreCategoryApi fakeStoreCategoryApi) {
+    // Constructor injection
+    public FakeStoreCategoryGateway(FakeStoreCategoryApi fakeStoreCategoryApi, CategoryMapper categoryMapper) {
         this.fakeStoreCategoryApi = fakeStoreCategoryApi;
+        this.categoryMapper = categoryMapper;
     }
 
     @Override
     public List<CategoryDTO> getAllCategories() throws IOException {
-        List<String> response =  this.fakeStoreCategoryApi
+        // 1. Call API
+        List<String> response = this.fakeStoreCategoryApi
                 .getAllFakeStoreCategories()
                 .execute()
                 .body();
-        if(response == null || response.isEmpty()){
-            throw new IOException("Failed to fetch Categories from FakeStore Api");
+
+        // 2. Validate
+        if (response == null || response.isEmpty()) {
+            throw new IOException("Failed to fetch Categories from FakeStore API");
         }
-        // Transform external API response to internal DTO(List<String> to CategoryDTO)
-        return response.stream()
-                 .map(categoryName -> CategoryDTO.builder()
-                            .name(categoryName)
-                            .build())
-        .toList();
+        // 3. Use mapper to transform
+        return categoryMapper.toDTOList(response);
     }
 }

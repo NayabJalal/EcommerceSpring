@@ -41,3 +41,11 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+/*
+dependencies {
+
+	// MapStruct for automatic mapping for automatic mapping
+	implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+	annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+}
+*/
