@@ -11,8 +11,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 
-public class ProductEntity extends BaseEntity{
-    private Long id;
+public class Products extends BaseEntity {
+    //private Long id; -> it will be created am(BaseEntity).
     private String title;
     private Double price;
     private String description;

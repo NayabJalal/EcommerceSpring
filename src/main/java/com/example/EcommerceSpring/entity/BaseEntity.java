@@ -35,7 +35,7 @@ public class BaseEntity {
         this.updatedAt=now;
     }
 
-    @PrePersist
+    @PreUpdate
     public void onUpdate(){
         this.updatedAt=Instant.now();
     }
