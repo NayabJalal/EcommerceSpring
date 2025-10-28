@@ -10,6 +10,7 @@ public class FakeStoreProductResponse {
     private String title;
     private Double price;
     private String description;
+    private long categoryId;
     private String category;
     private String image;
 }

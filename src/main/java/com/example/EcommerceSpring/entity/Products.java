@@ -2,6 +2,8 @@ package com.example.EcommerceSpring.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
 
 @Entity
@@ -17,8 +19,12 @@ public class Products extends BaseEntity {
     private Double price;
     @Column(columnDefinition = "TEXT")
     private String description;
-    @Column(length = 100)
-    private String category;
     @Column(length = 500)
     private String image;
+
+    // Each product belongs to one category
+    // or we can say -> One category can hava many products
+    @ManyToOne
+    @JoinColumn(name = "categoryId", nullable = false) //foreign key named as categoryId in here
+    private Category category;
 }
