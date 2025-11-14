@@ -32,7 +32,7 @@ public class ProductService {
     }
 
     public List<Products> getProductsByCategory(String category) {
-        return productRepository.findByCategory(category);
+        return productRepository.findByCategoryName(category);
     }
 
     public List<Products> getProductsByPriceRange(Double minPrice, Double maxPrice) {

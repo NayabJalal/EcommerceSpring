@@ -6,8 +6,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
 
-import java.util.List;
-
 @Entity
 @Getter
 @Setter
@@ -24,9 +22,7 @@ public class Products extends BaseEntity {
     @Column(length = 500)
     private String image;
 
-    // Each product belongs to one category
-    // or we can say -> One category can have many products
     @ManyToOne
-    @JoinColumn(name = "categoryId", nullable = false) //foreign key named as categoryId in here
-    private Category categoryId;
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;  // ✅ Fixed: Changed from categoryId to category
 }

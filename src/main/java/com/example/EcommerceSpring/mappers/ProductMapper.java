@@ -1,7 +1,9 @@
 package com.example.EcommerceSpring.mappers;
 
 import com.example.EcommerceSpring.dto.FakeStoreProductResponse;
+import com.example.EcommerceSpring.entity.Category;
 import com.example.EcommerceSpring.entity.Products;
+import com.example.EcommerceSpring.services.CategoryService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -9,6 +11,12 @@ import java.util.stream.Collectors;
 
 @Component
 public class ProductMapper {
+
+    private final CategoryService categoryService;
+
+    public ProductMapper(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
 
     // ============ DTO → Entity (For saving API data to DB) ============
 
@@ -20,11 +28,14 @@ public class ProductMapper {
             return null;
         }
 
+        // Get or create category from the category name string
+        Category category = categoryService.getOrCreateCategory(dto.getCategory());
+
         return Products.builder()
                 .title(dto.getTitle())
                 .price(dto.getPrice())
                 .description(dto.getDescription())
-                .categoryId()
+                .category(category)  // ✅ Set Category object
                 .image(dto.getImage())
                 .build();
     }
@@ -58,7 +69,13 @@ public class ProductMapper {
         dto.setTitle(entity.getTitle());
         dto.setPrice(entity.getPrice());
         dto.setDescription(entity.getDescription());
-        dto.setCategory(entity.getCategoryId());
+
+        // ✅ Extract category info from Category object
+        if (entity.getCategory() != null) {
+            dto.setCategoryId(entity.getCategory().getId());
+            dto.setCategory(entity.getCategory().getName());
+        }
+
         dto.setImage(entity.getImage());
 
         return dto;
@@ -91,7 +108,12 @@ public class ProductMapper {
         entity.setTitle(dto.getTitle());
         entity.setPrice(dto.getPrice());
         entity.setDescription(dto.getDescription());
-        entity.setCategoryId(dto.getCategory());
         entity.setImage(dto.getImage());
+
+        // ✅ Update category if provided
+        if (dto.getCategory() != null) {
+            Category category = categoryService.getOrCreateCategory(dto.getCategory());
+            entity.setCategory(category);
+        }
     }
 }
