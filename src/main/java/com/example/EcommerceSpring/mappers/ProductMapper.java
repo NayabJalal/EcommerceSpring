@@ -24,7 +24,7 @@ public class ProductMapper {
                 .title(dto.getTitle())
                 .price(dto.getPrice())
                 .description(dto.getDescription())
-                .category(dto.getCategory())
+                .categoryId()
                 .image(dto.getImage())
                 .build();
     }
@@ -58,7 +58,7 @@ public class ProductMapper {
         dto.setTitle(entity.getTitle());
         dto.setPrice(entity.getPrice());
         dto.setDescription(entity.getDescription());
-        dto.setCategory(entity.getCategory());
+        dto.setCategory(entity.getCategoryId());
         dto.setImage(entity.getImage());
 
         return dto;
@@ -91,7 +91,7 @@ public class ProductMapper {
         entity.setTitle(dto.getTitle());
         entity.setPrice(dto.getPrice());
         entity.setDescription(dto.getDescription());
-        entity.setCategory(dto.getCategory());
+        entity.setCategoryId(dto.getCategory());
         entity.setImage(dto.getImage());
     }
 }
