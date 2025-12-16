@@ -31,8 +31,8 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-    public List<Products> getProductsByCategory(String category) {
-        return productRepository.findByCategoryName(category);
+    public List<Products> getProductsByCategory(String categoryName) {
+        return productRepository.findByCategoryName(categoryName);
     }
 
     public List<Products> getProductsByPriceRange(Double minPrice, Double maxPrice) {

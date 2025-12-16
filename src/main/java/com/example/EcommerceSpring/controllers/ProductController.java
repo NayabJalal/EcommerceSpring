@@ -48,7 +48,7 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<FakeStoreProductResponse> getProductById(@PathVariable Long id) {
         return productService.getProductById(id)
-                .map(entity -> productMapper.toDTO(entity))
+                .map(productMapper::toDTO)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

@@ -17,7 +17,6 @@ public interface ProductRepository extends JpaRepository<Products, Long> {
     // Custom query methods
     Optional<Products> findByTitle(String title);
 
-    // ✅ Fixed: Category is an object, not a String
     List<Products> findByCategory(Category category);
 
     List<Products> findByCategoryName(String categoryName);
