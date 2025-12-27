@@ -1,11 +1,13 @@
 package com.example.EcommerceSpring.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "category")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,7 +18,13 @@ public class Category extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String name;
 
-    //One category have many products(Mirror)
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL) // category is mapped with the field category in product
-    private List<Products> products; // return list of products
+    @OneToMany(
+            mappedBy = "category",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    @JsonManagedReference
+    @Builder.Default
+    private List<Products> products = new ArrayList<>();
 }

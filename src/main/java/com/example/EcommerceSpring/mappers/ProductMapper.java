@@ -5,7 +5,6 @@ import com.example.EcommerceSpring.entity.Category;
 import com.example.EcommerceSpring.entity.Products;
 import com.example.EcommerceSpring.services.CategoryService;
 import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,47 +17,36 @@ public class ProductMapper {
         this.categoryService = categoryService;
     }
 
-    // ============ DTO → Entity (For saving API data to DB) ============
-
-    /**
-     * Convert FakeStoreProductResponse (DTO) → Products (Entity)
-     */
     public Products toEntity(FakeStoreProductResponse dto) {
         if (dto == null) {
             return null;
         }
 
-        // Get or create category from the category name string
-        Category category = categoryService.getOrCreateCategory(dto.getCategory());
+        Category category = null;
+        if (dto.getCategory() != null && !dto.getCategory().trim().isEmpty()) {
+            category = categoryService.getOrCreateCategory(dto.getCategory());
+        } else {
+            throw new IllegalArgumentException("Product must have a category");
+        }
 
         return Products.builder()
                 .title(dto.getTitle())
                 .price(dto.getPrice())
                 .description(dto.getDescription())
-                .category(category)  // ✅ Set Category object
+                .category(category)
                 .image(dto.getImage())
                 .build();
     }
 
-    /**
-     * Convert List<DTO> → List<Entity>
-     */
     public List<Products> toEntityList(List<FakeStoreProductResponse> dtos) {
         if (dtos == null || dtos.isEmpty()) {
             return List.of();
         }
-
         return dtos.stream()
                 .map(this::toEntity)
-                .filter(entity -> entity != null)
                 .collect(Collectors.toList());
     }
 
-    // ============ Entity → DTO (For returning DB data to client) ============
-
-    /**
-     * Convert Products (Entity) → FakeStoreProductResponse (DTO)
-     */
     public FakeStoreProductResponse toDTO(Products entity) {
         if (entity == null) {
             return null;
@@ -69,49 +57,36 @@ public class ProductMapper {
         dto.setTitle(entity.getTitle());
         dto.setPrice(entity.getPrice());
         dto.setDescription(entity.getDescription());
+        dto.setImage(entity.getImage());
 
-        // ✅ Extract category info from Category object
         if (entity.getCategory() != null) {
             dto.setCategoryId(entity.getCategory().getId());
             dto.setCategory(entity.getCategory().getName());
         }
 
-        dto.setImage(entity.getImage());
-
         return dto;
     }
 
-    /**
-     * Convert List<Entity> → List<DTO>
-     */
     public List<FakeStoreProductResponse> toDTOList(List<Products> entities) {
         if (entities == null || entities.isEmpty()) {
             return List.of();
         }
-
         return entities.stream()
                 .map(this::toDTO)
-                .filter(dto -> dto != null)
                 .collect(Collectors.toList());
     }
 
-    // ============ Update Operations ============
-
-    /**
-     * Update existing entity with DTO data (for PUT/PATCH operations)
-     */
     public void updateEntityFromDTO(Products entity, FakeStoreProductResponse dto) {
         if (entity == null || dto == null) {
             return;
         }
 
-        entity.setTitle(dto.getTitle());
-        entity.setPrice(dto.getPrice());
-        entity.setDescription(dto.getDescription());
-        entity.setImage(dto.getImage());
+        if (dto.getTitle() != null) entity.setTitle(dto.getTitle());
+        if (dto.getPrice() != null) entity.setPrice(dto.getPrice());
+        if (dto.getDescription() != null) entity.setDescription(dto.getDescription());
+        if (dto.getImage() != null) entity.setImage(dto.getImage());
 
-        // ✅ Update category if provided
-        if (dto.getCategory() != null) {
+        if (dto.getCategory() != null && !dto.getCategory().trim().isEmpty()) {
             Category category = categoryService.getOrCreateCategory(dto.getCategory());
             entity.setCategory(category);
         }
