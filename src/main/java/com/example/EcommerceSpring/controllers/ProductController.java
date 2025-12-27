@@ -38,8 +38,17 @@ public class ProductController {
      * Flow: Controller → ProductService → Repository (Entity) → Mapper → DTO → Response
      */
     @GetMapping
-    public ResponseEntity<List<FakeStoreProductResponse>> getAllProducts() {
-        List<Products> entities = productService.getAllProducts();
+    public ResponseEntity<List<FakeStoreProductResponse>> getAllProducts(
+            @RequestParam(required = false) String category) {
+        List<Products> entities;
+        // If category query parameter is provided, filter by category
+        if (category != null && !category.trim().isEmpty()) {
+            entities = productService.getProductsByCategory(category);
+        } else {
+            // Otherwise, return all products
+            entities = productService.getAllProducts();
+        }
+
         List<FakeStoreProductResponse> dtos = productMapper.toDTOList(entities);
         return ResponseEntity.ok(dtos);
     }
