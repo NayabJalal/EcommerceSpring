@@ -1,6 +1,7 @@
 package com.example.EcommerceSpring.mappers;
 
 import com.example.EcommerceSpring.dto.FakeStoreProductResponse;
+import com.example.EcommerceSpring.dto.ProductWithCategoryDTO;
 import com.example.EcommerceSpring.entity.Category;
 import com.example.EcommerceSpring.entity.Products;
 import com.example.EcommerceSpring.services.CategoryService;
@@ -36,6 +37,24 @@ public class ProductMapper {
                 .category(category)
                 .image(dto.getImage())
                 .build();
+    }
+    public static FakeStoreProductResponse toFakeStoreProductResponse(Products product) {
+        if (product == null) {
+            return null;
+        }
+
+        FakeStoreProductResponse response = new FakeStoreProductResponse();
+        response.setId(product.getId());
+        response.setTitle(product.getTitle());
+        response.setPrice(product.getPrice());
+        response.setDescription(product.getDescription());
+        response.setImage(product.getImage());
+        // Map category information
+        if (product.getCategory() != null) {
+            response.setCategoryId(product.getCategory().getId());
+            response.setCategory(product.getCategory().getName());
+        }
+        return response;
     }
 
     public List<Products> toEntityList(List<FakeStoreProductResponse> dtos) {

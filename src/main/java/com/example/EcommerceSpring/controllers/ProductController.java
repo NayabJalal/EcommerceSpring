@@ -1,10 +1,12 @@
 package com.example.EcommerceSpring.controllers;
 
 import com.example.EcommerceSpring.dto.FakeStoreProductResponse;
+import com.example.EcommerceSpring.dto.ProductWithCategoryDTO;
 import com.example.EcommerceSpring.entity.Products;
 import com.example.EcommerceSpring.mappers.ProductMapper;
 import com.example.EcommerceSpring.services.ProductService;
 import com.example.EcommerceSpring.services.ProductSyncService;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -146,5 +148,11 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to sync product: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/{id}/details")
+    public ResponseEntity<FakeStoreProductResponse> getProductWithCategory(@PathVariable Long id) throws Exception {
+        FakeStoreProductResponse dto = productService.getProductWithCategory(id);
+        return ResponseEntity.ok(dto);
     }
 }
