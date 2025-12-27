@@ -6,7 +6,6 @@ import com.example.EcommerceSpring.entity.Products;
 import com.example.EcommerceSpring.mappers.ProductMapper;
 import com.example.EcommerceSpring.services.ProductService;
 import com.example.EcommerceSpring.services.ProductSyncService;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,21 +30,21 @@ public class ProductController {
         this.productMapper = productMapper;
     }
 
-    // ========== DATABASE OPERATIONS (Controller ↔ Service ↔ Repository) ==========
-
     /**
-     * GET all products from database (returns DTOs)
-     * Flow: Controller → ProductService → Repository (Entity) → Mapper → DTO → Response
+     * GET all products OR filter by category using query parameter
+     * Examples:
+     *   GET /api/products              → Returns all products
+     *   GET /api/products?category=hoodie → Returns products in "hoodie" category
      */
     @GetMapping
     public ResponseEntity<List<FakeStoreProductResponse>> getAllProducts(
             @RequestParam(required = false) String category) {
+
         List<Products> entities;
-        // If category query parameter is provided, filter by category
+
         if (category != null && !category.trim().isEmpty()) {
             entities = productService.getProductsByCategory(category);
         } else {
-            // Otherwise, return all products
             entities = productService.getAllProducts();
         }
 
@@ -54,7 +53,8 @@ public class ProductController {
     }
 
     /**
-     * GET single product by ID from database (returns DTO)
+     * GET single product by ID (flat structure)
+     * Response: { id, title, price, categoryId, category: "name", ... }
      */
     @GetMapping("/{id}")
     public ResponseEntity<FakeStoreProductResponse> getProductById(@PathVariable Long id) {
@@ -65,7 +65,21 @@ public class ProductController {
     }
 
     /**
-     * GET products by category
+     * GET product with nested category object
+     * Response: { id, title, price, category: {id, name}, ... }
+     */
+    @GetMapping("/{id}/details")
+    public ResponseEntity<ProductWithCategoryDTO> getProductWithCategoryDetails(@PathVariable Long id) {
+        try {
+            ProductWithCategoryDTO dto = productService.getProductWithCategoryDetails(id);
+            return ResponseEntity.ok(dto);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    /**
+     * GET products by category (path variable)
      */
     @GetMapping("/category/{category}")
     public ResponseEntity<List<FakeStoreProductResponse>> getProductsByCategory(
@@ -76,8 +90,7 @@ public class ProductController {
     }
 
     /**
-     * POST - Create new product (accepts DTO, saves as Entity)
-     * Flow: DTO → Mapper → Entity → Service → Repository
+     * POST - Create new product
      */
     @PostMapping
     public ResponseEntity<FakeStoreProductResponse> createProduct(
@@ -157,11 +170,5 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to sync product: " + e.getMessage());
         }
-    }
-
-    @GetMapping("/{id}/details")
-    public ResponseEntity<FakeStoreProductResponse> getProductWithCategory(@PathVariable Long id) throws Exception {
-        FakeStoreProductResponse dto = productService.getProductWithCategory(id);
-        return ResponseEntity.ok(dto);
     }
 }

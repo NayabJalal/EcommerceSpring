@@ -8,10 +8,9 @@ import lombok.*;
 @Builder
 public class ProductWithCategoryDTO {
     private Long id;
+    private String image;
     private String title;
     private Double price;
     private String description;
-    private Long categoryId;
-    private String category;
-    private String image;
+    private CategoryDTO category;
 }

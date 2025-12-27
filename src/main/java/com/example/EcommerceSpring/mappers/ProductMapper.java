@@ -1,5 +1,6 @@
 package com.example.EcommerceSpring.mappers;
 
+import com.example.EcommerceSpring.dto.CategoryDTO;
 import com.example.EcommerceSpring.dto.FakeStoreProductResponse;
 import com.example.EcommerceSpring.dto.ProductWithCategoryDTO;
 import com.example.EcommerceSpring.entity.Category;
@@ -18,6 +19,8 @@ public class ProductMapper {
         this.categoryService = categoryService;
     }
 
+    // ========== DTO → Entity (For saving API data to DB) ==========
+
     public Products toEntity(FakeStoreProductResponse dto) {
         if (dto == null) {
             return null;
@@ -31,30 +34,12 @@ public class ProductMapper {
         }
 
         return Products.builder()
+                .image(dto.getImage())
                 .title(dto.getTitle())
                 .price(dto.getPrice())
                 .description(dto.getDescription())
                 .category(category)
-                .image(dto.getImage())
                 .build();
-    }
-    public static FakeStoreProductResponse toFakeStoreProductResponse(Products product) {
-        if (product == null) {
-            return null;
-        }
-
-        FakeStoreProductResponse response = new FakeStoreProductResponse();
-        response.setId(product.getId());
-        response.setTitle(product.getTitle());
-        response.setPrice(product.getPrice());
-        response.setDescription(product.getDescription());
-        response.setImage(product.getImage());
-        // Map category information
-        if (product.getCategory() != null) {
-            response.setCategoryId(product.getCategory().getId());
-            response.setCategory(product.getCategory().getName());
-        }
-        return response;
     }
 
     public List<Products> toEntityList(List<FakeStoreProductResponse> dtos) {
@@ -65,6 +50,8 @@ public class ProductMapper {
                 .map(this::toEntity)
                 .collect(Collectors.toList());
     }
+
+    // ========== Entity → DTO (Flat structure) ==========
 
     public FakeStoreProductResponse toDTO(Products entity) {
         if (entity == null) {
@@ -94,6 +81,47 @@ public class ProductMapper {
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
+
+    // ========== Entity → ProductDetailsDTO (Nested category object) ==========
+
+    /**
+     * Convert Entity to ProductDetailsDTO with nested category object
+     * Used for /api/products/{id}/details endpoint
+     */
+    public ProductWithCategoryDTO toDetailsDTO(Products entity) {
+        if (entity == null) {
+            return null;
+        }
+
+        ProductWithCategoryDTO dto = new ProductWithCategoryDTO();
+        dto.setId(entity.getId());
+        dto.setTitle(entity.getTitle());
+        dto.setPrice(entity.getPrice());
+        dto.setDescription(entity.getDescription());
+        dto.setImage(entity.getImage());
+
+        // Create nested category object
+        if (entity.getCategory() != null) {
+            CategoryDTO categoryDTO = CategoryDTO.builder()
+                    .id(entity.getCategory().getId())
+                    .name(entity.getCategory().getName())
+                    .build();
+            dto.setCategory(categoryDTO);
+        }
+
+        return dto;
+    }
+
+    public List<ProductWithCategoryDTO> toDetailsDTOList(List<Products> entities) {
+        if (entities == null || entities.isEmpty()) {
+            return List.of();
+        }
+        return entities.stream()
+                .map(this::toDetailsDTO)
+                .collect(Collectors.toList());
+    }
+
+    // ========== Update Operations ==========
 
     public void updateEntityFromDTO(Products entity, FakeStoreProductResponse dto) {
         if (entity == null || dto == null) {
