@@ -2,6 +2,7 @@ package com.example.EcommerceSpring.services;
 
 import com.example.EcommerceSpring.dto.ProductWithCategoryDTO;
 import com.example.EcommerceSpring.entity.Products;
+import com.example.EcommerceSpring.exception.ProductNotFoundException;
 import com.example.EcommerceSpring.mappers.ProductMapper;
 import com.example.EcommerceSpring.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,8 @@ public class ProductService {
     }
 
     public Optional<Products> getProductById(Long id) {
+        Products products = productRepository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException("Product with ID "+ id +" not found :) "));
         return productRepository.findById(id);
     }
 
