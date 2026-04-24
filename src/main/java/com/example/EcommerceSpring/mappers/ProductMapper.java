@@ -1,7 +1,7 @@
 package com.example.EcommerceSpring.mappers;
 
 import com.example.EcommerceSpring.dto.CategoryDTO;
-import com.example.EcommerceSpring.dto.FakeStoreProductResponse;
+import com.example.EcommerceSpring.dto.ProductDTO;
 import com.example.EcommerceSpring.dto.ProductWithCategoryDTO;
 import com.example.EcommerceSpring.entity.Category;
 import com.example.EcommerceSpring.entity.Products;
@@ -21,7 +21,7 @@ public class ProductMapper {
 
     // ========== DTO → Entity (For saving API data to DB) ==========
 
-    public Products toEntity(FakeStoreProductResponse dto) {
+    public Products toEntity(ProductDTO dto) {
         if (dto == null) {
             return null;
         }
@@ -42,7 +42,7 @@ public class ProductMapper {
                 .build();
     }
 
-    public List<Products> toEntityList(List<FakeStoreProductResponse> dtos) {
+    public List<Products> toEntityList(List<ProductDTO> dtos) {
         if (dtos == null || dtos.isEmpty()) {
             return List.of();
         }
@@ -53,12 +53,12 @@ public class ProductMapper {
 
     // ========== Entity → DTO (Flat structure) ==========
 
-    public FakeStoreProductResponse toDTO(Products entity) {
+    public ProductDTO toDTO(Products entity) {
         if (entity == null) {
             return null;
         }
 
-        FakeStoreProductResponse dto = new FakeStoreProductResponse();
+        ProductDTO dto = new ProductDTO();
         dto.setId(entity.getId());
         dto.setTitle(entity.getTitle());
         dto.setPrice(entity.getPrice());
@@ -73,7 +73,7 @@ public class ProductMapper {
         return dto;
     }
 
-    public List<FakeStoreProductResponse> toDTOList(List<Products> entities) {
+    public List<ProductDTO> toDTOList(List<Products> entities) {
         if (entities == null || entities.isEmpty()) {
             return List.of();
         }
@@ -123,7 +123,7 @@ public class ProductMapper {
 
     // ========== Update Operations ==========
 
-    public void updateEntityFromDTO(Products entity, FakeStoreProductResponse dto) {
+    public void updateEntityFromDTO(Products entity, ProductDTO dto) {
         if (entity == null || dto == null) {
             return;
         }

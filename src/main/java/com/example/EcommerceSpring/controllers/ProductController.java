@@ -1,6 +1,6 @@
 package com.example.EcommerceSpring.controllers;
 
-import com.example.EcommerceSpring.dto.FakeStoreProductResponse;
+import com.example.EcommerceSpring.dto.ProductDTO;
 import com.example.EcommerceSpring.dto.ProductWithCategoryDTO;
 import com.example.EcommerceSpring.entity.Products;
 import com.example.EcommerceSpring.mappers.ProductMapper;
@@ -37,7 +37,7 @@ public class ProductController {
      *   GET /api/products?category=hoodie → Returns products in "hoodie" category
      */
     @GetMapping
-    public ResponseEntity<List<FakeStoreProductResponse>> getAllProducts(
+    public ResponseEntity<List<ProductDTO>> getAllProducts(
             @RequestParam(required = false) String category) {
 
         List<Products> entities;
@@ -48,7 +48,7 @@ public class ProductController {
             entities = productService.getAllProducts();
         }
 
-        List<FakeStoreProductResponse> dtos = productMapper.toDTOList(entities);
+        List<ProductDTO> dtos = productMapper.toDTOList(entities);
         return ResponseEntity.ok(dtos);
     }
 
@@ -57,7 +57,7 @@ public class ProductController {
      * Response: { id, title, price, categoryId, category: "name", ... }
      */
     @GetMapping("/{id}")
-    public ResponseEntity<FakeStoreProductResponse> getProductById(@PathVariable Long id) {
+    public ResponseEntity<ProductDTO> getProductById(@PathVariable Long id) {
         return productService.getProductById(id)
                 .map(productMapper::toDTO)
                 .map(ResponseEntity::ok)
@@ -82,10 +82,10 @@ public class ProductController {
      * GET products by category (path variable)
      */
     @GetMapping("/category/{category}")
-    public ResponseEntity<List<FakeStoreProductResponse>> getProductsByCategory(
+    public ResponseEntity<List<ProductDTO>> getProductsByCategory(
             @PathVariable String category) {
         List<Products> entities = productService.getProductsByCategory(category);
-        List<FakeStoreProductResponse> dtos = productMapper.toDTOList(entities);
+        List<ProductDTO> dtos = productMapper.toDTOList(entities);
         return ResponseEntity.ok(dtos);
     }
 
@@ -93,11 +93,11 @@ public class ProductController {
      * POST - Create new product
      */
     @PostMapping
-    public ResponseEntity<FakeStoreProductResponse> createProduct(
-            @RequestBody FakeStoreProductResponse productDto) {
+    public ResponseEntity<ProductDTO> createProduct(
+            @RequestBody ProductDTO productDto) {
         Products entity = productMapper.toEntity(productDto);
         Products savedEntity = productService.saveProduct(entity);
-        FakeStoreProductResponse responseDto = productMapper.toDTO(savedEntity);
+        ProductDTO responseDto = productMapper.toDTO(savedEntity);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
@@ -105,13 +105,13 @@ public class ProductController {
      * PUT - Update existing product
      */
     @PutMapping("/{id}")
-    public ResponseEntity<FakeStoreProductResponse> updateProduct(
+    public ResponseEntity<ProductDTO> updateProduct(
             @PathVariable Long id,
-            @RequestBody FakeStoreProductResponse productDto) {
+            @RequestBody ProductDTO productDto) {
         try {
             Products updatedEntity = productMapper.toEntity(productDto);
             Products savedEntity = productService.updateProduct(id, updatedEntity);
-            FakeStoreProductResponse responseDto = productMapper.toDTO(savedEntity);
+            ProductDTO responseDto = productMapper.toDTO(savedEntity);
             return ResponseEntity.ok(responseDto);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();

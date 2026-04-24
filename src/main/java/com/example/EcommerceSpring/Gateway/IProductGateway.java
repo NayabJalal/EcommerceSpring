@@ -1,9 +1,9 @@
 package com.example.EcommerceSpring.Gateway;
 
-import com.example.EcommerceSpring.dto.FakeStoreProductResponse;
+import com.example.EcommerceSpring.dto.ProductDTO;
 import java.io.IOException;
 import java.util.List;
 
 public interface IProductGateway {
-    List<FakeStoreProductResponse> fetchAllProducts() throws IOException;
+    List<ProductDTO> fetchAllProducts() throws IOException;
 }

@@ -1,7 +1,7 @@
 package com.example.EcommerceSpring.services;
 
 import com.example.EcommerceSpring.Gateway.FakeStoreProductGateway;
-import com.example.EcommerceSpring.dto.FakeStoreProductResponse;
+import com.example.EcommerceSpring.dto.ProductDTO;
 import com.example.EcommerceSpring.entity.Products;
 import com.example.EcommerceSpring.mappers.ProductMapper;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class ProductSyncService {
     @Transactional
     public List<Products> syncAllProductsFromFakeStore() throws IOException {
         // 1. Fetch from FakeStore API (returns DTOs)
-        List<FakeStoreProductResponse> apiProducts = fakeStoreGateway.fetchAllProducts();
+        List<ProductDTO> apiProducts = fakeStoreGateway.fetchAllProducts();
 
         // 2. Convert DTOs to Entities using mapper
         List<Products> productEntities = productMapper.toEntityList(apiProducts);
@@ -51,7 +51,7 @@ public class ProductSyncService {
     @Transactional
     public Products syncSingleProduct(Long fakeStoreProductId) throws IOException {
         // 1. Fetch single product from API
-        FakeStoreProductResponse apiProduct = fakeStoreGateway.getProductById(fakeStoreProductId);
+        ProductDTO apiProduct = fakeStoreGateway.getProductById(fakeStoreProductId);
 
         // 2. Convert DTO to Entity
         Products productEntity = productMapper.toEntity(apiProduct);

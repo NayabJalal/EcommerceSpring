@@ -1,7 +1,7 @@
 package com.example.EcommerceSpring.Gateway;
 
 import com.example.EcommerceSpring.Gateway.api.FakeStoreProductApi;
-import com.example.EcommerceSpring.dto.FakeStoreProductResponse;
+import com.example.EcommerceSpring.dto.ProductDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import retrofit2.Retrofit;
@@ -27,8 +27,8 @@ public class FakeStoreProductGateway implements IProductGateway {
      * Fetch all products from FakeStore API
      * Returns: List of DTOs (no conversion)
      */
-    public List<FakeStoreProductResponse> getAllProducts() throws IOException {
-        List<FakeStoreProductResponse> response = productApi.getAllProducts().execute().body();
+    public List<ProductDTO> getAllProducts() throws IOException {
+        List<ProductDTO> response = productApi.getAllProducts().execute().body();
 
         if (response == null) {
             throw new IOException("Failed to fetch products from FakeStore API");
@@ -41,8 +41,8 @@ public class FakeStoreProductGateway implements IProductGateway {
      * Fetch single product by ID from FakeStore API
      * Returns: Single DTO (no conversion)
      */
-    public FakeStoreProductResponse getProductById(Long id) throws IOException {
-        FakeStoreProductResponse response = productApi.getProductById(id).execute().body();
+    public ProductDTO getProductById(Long id) throws IOException {
+        ProductDTO response = productApi.getProductById(id).execute().body();
 
         if (response == null) {
             throw new IOException("Product with id " + id + " not found");
@@ -51,7 +51,7 @@ public class FakeStoreProductGateway implements IProductGateway {
     }
 
     @Override
-    public List<FakeStoreProductResponse> fetchAllProducts() throws IOException {
+    public List<ProductDTO> fetchAllProducts() throws IOException {
         return getAllProducts();
     }
 }
