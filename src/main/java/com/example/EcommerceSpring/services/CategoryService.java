@@ -1,10 +1,14 @@
 package com.example.EcommerceSpring.services;
 
+import com.example.EcommerceSpring.dto.CategoryDTO;
 import com.example.EcommerceSpring.entity.Category;
+import com.example.EcommerceSpring.exception.CategoryNotFoundException;
+import com.example.EcommerceSpring.mappers.CategoryMapper;
 import com.example.EcommerceSpring.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,12 +16,14 @@ import java.util.Optional;
  * Service for managing Category entities in database
  */
 @Service
-public class CategoryService {
+public class CategoryService implements ICategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
 
-    public CategoryService(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
         this.categoryRepository = categoryRepository;
+        this.categoryMapper = categoryMapper;
     }
 
     /**
@@ -81,5 +87,22 @@ public class CategoryService {
      */
     public boolean categoryExists(String name) {
         return categoryRepository.existsByName(name);
+    }
+
+    @Override
+    public List<CategoryDTO> getCategoriesService() throws IOException {
+        List<Category> categories = getAllCategories();
+        return categoryMapper.toDTOListFromEntities(categories);
+    }
+
+    @Override
+    @Transactional
+    public Category updateCategory(Long id, Category updatedCategory) {
+        return categoryRepository.findById(id)
+                .map(existingCategory -> {
+                    existingCategory.setName(updatedCategory.getName());
+                    return categoryRepository.save(existingCategory);
+                })
+                .orElseThrow(() -> new CategoryNotFoundException("Category not found with id: " + id));
     }
 }

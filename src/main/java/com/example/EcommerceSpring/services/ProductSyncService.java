@@ -15,7 +15,7 @@ import java.util.List;
  * Separates API concerns from database operations
  */
 @Service
-public class ProductSyncService {
+public class ProductSyncService implements IProductSyncService {
 
     private final FakeStoreProductGateway fakeStoreGateway;
     private final ProductService productService;

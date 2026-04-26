@@ -42,4 +42,26 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(err , HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    //Unsupported Operation Exception -----
+    @ExceptionHandler(UnsupportedOperationException.class)
+    public ResponseEntity<ErrorResponse> handleUnsupportedOperation(UnsupportedOperationException ex){
+        ErrorResponse err = new ErrorResponse(
+          HttpStatus.METHOD_NOT_ALLOWED.value(),
+          ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(err , HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    //Illegal Argument Exception -----
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex){
+        ErrorResponse err = new ErrorResponse(
+          HttpStatus.BAD_REQUEST.value(),
+          ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(err , HttpStatus.BAD_REQUEST);
+    }
 }

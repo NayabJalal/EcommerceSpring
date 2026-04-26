@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
-public class ProductService {
+public class ProductService implements IProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
@@ -48,9 +48,9 @@ public class ProductService {
      * Get product with nested category object
      * Returns ProductDetailsDTO with category as object
      */
-    public ProductWithCategoryDTO getProductWithCategoryDetails(Long id) {
+    public ProductWithCategoryDTO getProductWithCategory(Long id) throws Exception {
         Products product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
 
         return productMapper.toDetailsDTO(product);
     }
@@ -80,7 +80,7 @@ public class ProductService {
                     existingProduct.setImage(updatedProduct.getImage());
                     return productRepository.save(existingProduct);
                 })
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
     }
 
     // ============ DELETE Operations ============

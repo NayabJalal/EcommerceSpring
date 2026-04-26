@@ -2,6 +2,7 @@ package com.example.EcommerceSpring.services;
 
 import com.example.EcommerceSpring.Gateway.ICategoryGateway;
 import com.example.EcommerceSpring.dto.CategoryDTO;
+import com.example.EcommerceSpring.entity.Category;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,11 @@ public class FakestoreCategoryService implements ICategoryService{
     public List<CategoryDTO> getCategoriesService() throws IOException {
         // ↓ CALLS: ICategoryGateway.getAllCategories()
         return this.categoryGateway.getAllCategories();
+    }
+
+    @Override
+    public Category updateCategory(Long id, Category updatedCategory) {
+        throw new UnsupportedOperationException("Update operation not supported for external FakeStore categories");
     }
 
 }

@@ -2,14 +2,17 @@ package com.example.EcommerceSpring.controllers;
 
 import com.example.EcommerceSpring.dto.CategoryDTO;
 import com.example.EcommerceSpring.entity.Category;
+import com.example.EcommerceSpring.exception.CategoryNotFoundException;
 import com.example.EcommerceSpring.mappers.CategoryMapper;
 import com.example.EcommerceSpring.services.CategoryService;
 import com.example.EcommerceSpring.services.ICategoryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("api/categories")
 public class CategoryController {
@@ -18,14 +21,6 @@ public class CategoryController {
     private final CategoryService dbCategoryService;
     private final CategoryMapper categoryMapper;
 
-    public CategoryController(
-            ICategoryService categoryService,
-            CategoryService dbCategoryService,
-            CategoryMapper categoryMapper) {
-        this.categoryService = categoryService;
-        this.dbCategoryService = dbCategoryService;
-        this.categoryMapper = categoryMapper;
-    }
 
     @GetMapping("/fakestore")
     public ResponseEntity<List<CategoryDTO>> getFakeStoreCategories() throws IOException {
@@ -62,6 +57,18 @@ public class CategoryController {
         Category category = categoryMapper.toEntity(categoryDTO);
         Category saved = dbCategoryService.saveCategory(category);
         return ResponseEntity.ok(categoryMapper.toDTO(saved));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long id, @RequestBody CategoryDTO categoryDTO) {
+        try {
+            Category updatedEntity = categoryMapper.toEntity(categoryDTO);
+            Category savedEntity = dbCategoryService.updateCategory(id, updatedEntity);
+            CategoryDTO responseDto = categoryMapper.toDTO(savedEntity);
+            return ResponseEntity.ok(responseDto);
+        } catch (CategoryNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")

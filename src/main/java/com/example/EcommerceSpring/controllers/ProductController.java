@@ -3,9 +3,11 @@ package com.example.EcommerceSpring.controllers;
 import com.example.EcommerceSpring.dto.ProductDTO;
 import com.example.EcommerceSpring.dto.ProductWithCategoryDTO;
 import com.example.EcommerceSpring.entity.Products;
+import com.example.EcommerceSpring.exception.ProductNotFoundException;
 import com.example.EcommerceSpring.mappers.ProductMapper;
-import com.example.EcommerceSpring.services.ProductService;
-import com.example.EcommerceSpring.services.ProductSyncService;
+import com.example.EcommerceSpring.services.IProductSyncService;
+import com.example.EcommerceSpring.services.IProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,23 +15,14 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
 
-    private final ProductService productService;
-    private final ProductSyncService productSyncService;
+    private final IProductService productService;
+    private final IProductSyncService productSyncService;
     private final ProductMapper productMapper;
-
-    public ProductController(
-            ProductService productService,
-            ProductSyncService productSyncService,
-            ProductMapper productMapper) {
-        this.productService = productService;
-        this.productSyncService = productSyncService;
-        this.productMapper = productMapper;
-    }
-
     /**
      * GET all products OR filter by category using query parameter
      * Examples:
@@ -71,9 +64,9 @@ public class ProductController {
     @GetMapping("/{id}/details")
     public ResponseEntity<ProductWithCategoryDTO> getProductWithCategoryDetails(@PathVariable Long id) {
         try {
-            ProductWithCategoryDTO dto = productService.getProductWithCategoryDetails(id);
+            ProductWithCategoryDTO dto = productService.getProductWithCategory(id);
             return ResponseEntity.ok(dto);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
@@ -113,7 +106,7 @@ public class ProductController {
             Products savedEntity = productService.updateProduct(id, updatedEntity);
             ProductDTO responseDto = productMapper.toDTO(savedEntity);
             return ResponseEntity.ok(responseDto);
-        } catch (RuntimeException e) {
+        } catch (ProductNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
     }
