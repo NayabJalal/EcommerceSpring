@@ -1,5 +1,7 @@
 package com.example.EcommerceSpring.repository;
 import com.example.EcommerceSpring.entity.Products;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,4 +21,8 @@ public interface ProductRepository extends JpaRepository<Products, Long> {
 
     @Query(value = "SELECT * FROM products WHERE price > :minPrice", nativeQuery = true)
     List<Products> findExpensiveNative(@Param("minPrice") Double minPrice);
+
+    Page<Products> findByCategory_Name(String categoryName, Pageable pageable);
+
+    Page<Products> findByPriceBetween(Double minPrice, Double maxPrice, Pageable pageable);
 }

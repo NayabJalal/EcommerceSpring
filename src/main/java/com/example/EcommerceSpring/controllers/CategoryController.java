@@ -7,6 +7,10 @@ import com.example.EcommerceSpring.mappers.CategoryMapper;
 import com.example.EcommerceSpring.services.CategoryService;
 import com.example.EcommerceSpring.services.ICategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
@@ -29,18 +33,19 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CategoryDTO>> getAllCategories(
-            @RequestParam(required = false) String name) {
+    public ResponseEntity<Page<CategoryDTO>> getAllCategories(
+            @RequestParam(required = false) String name,
+            @PageableDefault(size = 10, sort = "name") Pageable pageable) {
 
         if (name != null && !name.trim().isEmpty()) {
             return dbCategoryService.getCategoryByName(name)
                     .map(categoryMapper::toDTO)
-                    .map(dto -> ResponseEntity.ok(List.of(dto)))
-                    .orElse(ResponseEntity.ok(List.of()));
+                    .map(dto -> ResponseEntity.ok((Page<CategoryDTO>) new PageImpl<>(List.of(dto), pageable, 1)))
+                    .orElse(ResponseEntity.ok(Page.empty(pageable)));
         }
 
-        List<Category> categories = dbCategoryService.getAllCategories();
-        List<CategoryDTO> dtos = categoryMapper.toDTOListFromEntities(categories);
+        Page<Category> categories = dbCategoryService.getAllCategories(pageable);
+        Page<CategoryDTO> dtos = categories.map(categoryMapper::toDTO);
         return ResponseEntity.ok(dtos);
     }
 

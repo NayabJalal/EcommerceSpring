@@ -5,6 +5,8 @@ import com.example.EcommerceSpring.entity.Products;
 import com.example.EcommerceSpring.exception.ProductNotFoundException;
 import com.example.EcommerceSpring.mappers.ProductMapper;
 import com.example.EcommerceSpring.repository.ProductRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,8 +28,18 @@ public class ProductService implements IProductService {
 
     // ============ READ Operations ============
 
-    public List<Products> getAllProducts() {
-        return productRepository.findAll();
+    @Override
+    public Page<Products> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Products> getAllProducts(String category, Pageable pageable) {
+        if (category != null && !category.trim().isEmpty()) {
+            return productRepository.findByCategory_Name(category, pageable);
+        } else {
+            return productRepository.findAll(pageable);
+        }
     }
 
     public Optional<Products> getProductById(Long id) {
@@ -36,19 +48,21 @@ public class ProductService implements IProductService {
         return productRepository.findById(id);
     }
 
-    public List<Products> getProductsByCategory(String categoryName) {
-        return productRepository.findByCategoryName(categoryName);
+    @Override
+    public Page<Products> getProductsByCategory(String categoryName, Pageable pageable) {
+        return productRepository.findByCategory_Name(categoryName, pageable);
     }
 
-    public List<Products> getProductsByPriceRange(Double minPrice, Double maxPrice) {
-        return productRepository.findByPriceBetween(minPrice, maxPrice);
+    @Override
+    public Page<Products> getProductsByPriceRange(Double minPrice, Double maxPrice, Pageable pageable) {
+        return productRepository.findByPriceBetween(minPrice, maxPrice, pageable);
     }
 
     /**
      * Get product with nested category object
      * Returns ProductDetailsDTO with category as object
      */
-    public ProductWithCategoryDTO getProductWithCategory(Long id) throws Exception {
+    public ProductWithCategoryDTO getProductWithCategory(Long id) {
         Products product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
 

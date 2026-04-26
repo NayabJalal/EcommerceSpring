@@ -3,8 +3,11 @@ package com.example.EcommerceSpring.services;
 import com.example.EcommerceSpring.dto.CategoryDTO;
 import com.example.EcommerceSpring.entity.Category;
 import com.example.EcommerceSpring.exception.CategoryNotFoundException;
+import com.example.EcommerceSpring.exception.ValidationException;
 import com.example.EcommerceSpring.mappers.CategoryMapper;
 import com.example.EcommerceSpring.repository.CategoryRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +36,7 @@ public class CategoryService implements ICategoryService {
     @Transactional
     public Category getOrCreateCategory(String categoryName) {
         if (categoryName == null || categoryName.trim().isEmpty()) {
-            throw new IllegalArgumentException("Category name cannot be null or empty");
+            throw new ValidationException("Category name cannot be null or empty");
         }
 
         return categoryRepository.findByName(categoryName)
@@ -50,6 +53,13 @@ public class CategoryService implements ICategoryService {
      */
     public List<Category> getAllCategories() {
         return categoryRepository.findAll();
+    }
+
+    /**
+     * Get all categories with pagination
+     */
+    public Page<Category> getAllCategories(Pageable pageable) {
+        return categoryRepository.findAll(pageable);
     }
 
     /**

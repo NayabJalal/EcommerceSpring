@@ -5,6 +5,7 @@ import com.example.EcommerceSpring.dto.ProductDTO;
 import com.example.EcommerceSpring.dto.ProductWithCategoryDTO;
 import com.example.EcommerceSpring.entity.Category;
 import com.example.EcommerceSpring.entity.Products;
+import com.example.EcommerceSpring.exception.ValidationException;
 import com.example.EcommerceSpring.services.CategoryService;
 import org.springframework.stereotype.Component;
 import java.util.List;
@@ -30,7 +31,7 @@ public class ProductMapper {
         if (dto.getCategory() != null && !dto.getCategory().trim().isEmpty()) {
             category = categoryService.getOrCreateCategory(dto.getCategory());
         } else {
-            throw new IllegalArgumentException("Product must have a category");
+            throw new ValidationException("Product must have a category");
         }
 
         return Products.builder()

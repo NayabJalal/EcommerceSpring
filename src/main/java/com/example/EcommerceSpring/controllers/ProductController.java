@@ -3,11 +3,13 @@ package com.example.EcommerceSpring.controllers;
 import com.example.EcommerceSpring.dto.ProductDTO;
 import com.example.EcommerceSpring.dto.ProductWithCategoryDTO;
 import com.example.EcommerceSpring.entity.Products;
-import com.example.EcommerceSpring.exception.ProductNotFoundException;
 import com.example.EcommerceSpring.mappers.ProductMapper;
 import com.example.EcommerceSpring.services.IProductSyncService;
 import com.example.EcommerceSpring.services.IProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,23 +27,18 @@ public class ProductController {
     private final ProductMapper productMapper;
     /**
      * GET all products OR filter by category using query parameter
+     * Supports pagination with page, size, sort parameters
      * Examples:
-     *   GET /api/products              → Returns all products
-     *   GET /api/products?category=hoodie → Returns products in "hoodie" category
+     *   GET /api/products?page=0&size=10&sort=title,asc              → Returns paginated products
+     *   GET /api/products?category=hoodie&page=0&size=5 → Returns paginated products in "hoodie" category
      */
     @GetMapping
-    public ResponseEntity<List<ProductDTO>> getAllProducts(
-            @RequestParam(required = false) String category) {
+    public ResponseEntity<Page<ProductDTO>> getAllProducts(
+            @RequestParam(required = false) String category,
+            @PageableDefault(size = 10, sort = "title") Pageable pageable) {
 
-        List<Products> entities;
-
-        if (category != null && !category.trim().isEmpty()) {
-            entities = productService.getProductsByCategory(category);
-        } else {
-            entities = productService.getAllProducts();
-        }
-
-        List<ProductDTO> dtos = productMapper.toDTOList(entities);
+        Page<Products> entities = productService.getAllProducts(category, pageable);
+        Page<ProductDTO> dtos = entities.map(productMapper::toDTO);
         return ResponseEntity.ok(dtos);
     }
 
@@ -63,22 +60,20 @@ public class ProductController {
      */
     @GetMapping("/{id}/details")
     public ResponseEntity<ProductWithCategoryDTO> getProductWithCategoryDetails(@PathVariable Long id) {
-        try {
-            ProductWithCategoryDTO dto = productService.getProductWithCategory(id);
-            return ResponseEntity.ok(dto);
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
-        }
+        ProductWithCategoryDTO dto = productService.getProductWithCategory(id);
+        return ResponseEntity.ok(dto);
     }
 
     /**
      * GET products by category (path variable)
+     * Supports pagination
      */
     @GetMapping("/category/{category}")
-    public ResponseEntity<List<ProductDTO>> getProductsByCategory(
-            @PathVariable String category) {
-        List<Products> entities = productService.getProductsByCategory(category);
-        List<ProductDTO> dtos = productMapper.toDTOList(entities);
+    public ResponseEntity<Page<ProductDTO>> getProductsByCategory(
+            @PathVariable String category,
+            @PageableDefault(size = 10, sort = "title") Pageable pageable) {
+        Page<Products> entities = productService.getProductsByCategory(category, pageable);
+        Page<ProductDTO> dtos = entities.map(productMapper::toDTO);
         return ResponseEntity.ok(dtos);
     }
 
@@ -101,14 +96,10 @@ public class ProductController {
     public ResponseEntity<ProductDTO> updateProduct(
             @PathVariable Long id,
             @RequestBody ProductDTO productDto) {
-        try {
-            Products updatedEntity = productMapper.toEntity(productDto);
-            Products savedEntity = productService.updateProduct(id, updatedEntity);
-            ProductDTO responseDto = productMapper.toDTO(savedEntity);
-            return ResponseEntity.ok(responseDto);
-        } catch (ProductNotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+        Products updatedEntity = productMapper.toEntity(productDto);
+        Products savedEntity = productService.updateProduct(id, updatedEntity);
+        ProductDTO responseDto = productMapper.toDTO(savedEntity);
+        return ResponseEntity.ok(responseDto);
     }
 
     /**

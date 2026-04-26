@@ -64,4 +64,15 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(err , HttpStatus.BAD_REQUEST);
     }
+
+    //Validation Exception -----
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(ValidationException ex){
+        ErrorResponse err = new ErrorResponse(
+          HttpStatus.BAD_REQUEST.value(),
+          ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(err , HttpStatus.BAD_REQUEST);
+    }
 }

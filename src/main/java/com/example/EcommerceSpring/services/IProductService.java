@@ -3,6 +3,8 @@ package com.example.EcommerceSpring.services;
 import com.example.EcommerceSpring.dto.ProductDTO;
 import com.example.EcommerceSpring.dto.ProductWithCategoryDTO;
 import com.example.EcommerceSpring.entity.Products;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,15 +12,17 @@ import java.util.Optional;
 public interface IProductService {
 
     // READ Operations
-    List<Products> getAllProducts();
+    Page<Products> getAllProducts(Pageable pageable);
 
     Optional<Products> getProductById(Long id);
 
-    List<Products> getProductsByCategory(String categoryName);
+    Page<Products> getProductsByCategory(String categoryName, Pageable pageable);
 
-    List<Products> getProductsByPriceRange(Double minPrice, Double maxPrice);
+    Page<Products> getProductsByPriceRange(Double minPrice, Double maxPrice, Pageable pageable);
 
-    ProductWithCategoryDTO getProductWithCategory(Long id) throws Exception;
+    Page<Products> getAllProducts(String category, Pageable pageable);
+
+    ProductWithCategoryDTO getProductWithCategory(Long id);
 
     // CREATE Operations
     Products saveProduct(Products product);
